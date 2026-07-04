@@ -35,22 +35,16 @@ resource "aws_iam_role_policy" "francesco-agnoletto-cost-explorer-lambda-policy"
           "ce:GetCostAndUsage"
         ],
         Resource : "*"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy" "francesco-agnoletto-cost-explorer-put-lambda-policy" {
-  name = "S3-francesco-agnoletto-put-cost-metrics"
-  role = aws_iam_role.francesco-agnoletto-cost-explorer-lambda-role.id
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
+      },
       {
         Effect : "Allow",
         Action : "s3:PutObject",
         Resource : "${aws_s3_bucket.francesco-agnoletto-bucket.arn}/data/cost-metrics.json"
+      },
+      {
+        Effect : "Allow",
+        Action : "cloudfront:CreateInvalidation",
+        Resource : "${module.hosting.aws_cloudfront_distribution_arn}"
       }
     ]
   })
