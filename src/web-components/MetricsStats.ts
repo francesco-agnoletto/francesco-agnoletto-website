@@ -13,7 +13,7 @@ const formatMatrix: Array<[string, (value: CloudfrontMetrics) => string]> = [
   ["requests/month", (stats) => String(stats.requests)],
   ["bandwidth/month", (stats) => formatBytes(stats.bandwidth)],
   ["cache hit rate", (stats) => formatPercentage(stats.cacheHitRate)],
-  ["origin latency", (stats) => stats.originLatency.toFixed(2)],
+  ["origin latency", (stats) => `${stats.originLatency.toFixed(2)} ms`],
   ["availability", (stats) => formatPercentage(stats.availability)],
 ];
 
