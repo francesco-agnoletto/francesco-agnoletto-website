@@ -3,11 +3,18 @@ import {
   GetMetricDataCommand,
 } from "@aws-sdk/client-cloudwatch";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  CloudFrontClient,
+  CreateInvalidationCommand,
+} from "@aws-sdk/client-cloudfront";
 
 import { sumAllValues, averageAllValues } from "./utils/format";
 
-const cloudwatch = new CloudWatchClient({ region: "us-east-1" });
-const s3 = new S3Client({ region: "us-east-1" });
+const region = "us-east-1";
+
+const cloudwatch = new CloudWatchClient({ region });
+const s3 = new S3Client({ region });
+const cloudFront = new CloudFrontClient({ region });
 
 const metric = (id: string, metricName: string, stat = "Average") => ({
   Id: id,
@@ -91,7 +98,20 @@ export const handler = async () => {
         Key: `data/cloudfront-metrics.json`,
         Body: JSON.stringify(data),
         ContentType: "application/json",
-        CacheControl: "no-cache",
+        CacheControl: "public, max-age=3600",
+      }),
+    );
+
+    await cloudFront.send(
+      new CreateInvalidationCommand({
+        DistributionId: process.env.CLOUDFRONT_DISTRIBUTION_ID,
+        InvalidationBatch: {
+          CallerReference: Date.now().toString(),
+          Paths: {
+            Quantity: 1,
+            Items: ["/data/cloudfront-metrics.json"],
+          },
+        },
       }),
     );
 
