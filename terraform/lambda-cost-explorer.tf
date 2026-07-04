@@ -8,7 +8,8 @@ resource "aws_lambda_function" "francesco-agnoletto-cost-explorer-lambda" {
 
   environment {
     variables = {
-      S3_BUCKET_NAME = aws_s3_bucket.francesco-agnoletto-bucket.bucket
+      S3_BUCKET_NAME             = aws_s3_bucket.francesco-agnoletto-bucket.bucket
+      CLOUDFRONT_DISTRIBUTION_ID = module.hosting.aws_cloudfront_distribution_id
     }
   }
 
