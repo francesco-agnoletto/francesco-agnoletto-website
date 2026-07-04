@@ -1,6 +1,5 @@
 import { defineConfig } from "vite";
-import path, { resolve } from "path";
-import fs from "fs";
+import { resolve } from "path";
 import injectHTML from "vite-plugin-html-inject";
 
 export default defineConfig({
