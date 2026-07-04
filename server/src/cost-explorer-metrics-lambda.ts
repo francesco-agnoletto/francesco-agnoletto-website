@@ -4,13 +4,20 @@ import {
   GetCostAndUsageCommandInput,
 } from "@aws-sdk/client-cost-explorer";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
+import {
+  CloudFrontClient,
+  CreateInvalidationCommand,
+} from "@aws-sdk/client-cloudfront";
 
 import { formatDate } from "./utils/format";
 
+const region = "us-east-1";
+
 const client = new CostExplorerClient({
-  region: "us-east-1",
+  region,
 });
-const s3 = new S3Client({ region: "us-east-1" });
+const s3 = new S3Client({ region });
+const cloudFront = new CloudFrontClient({ region });
 
 const now = new Date();
 const start = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -33,16 +40,6 @@ export const handler = async () => {
       ],
     };
 
-    // reconsider adding tag-based filtering if needed in the future
-    /* if (process.env.TAG_VALUE) {
-      commandParams.Filter = {
-        Tags: {
-          Key: process.env.TAG_KEY,
-          Values: [process.env.TAG_VALUE],
-        },
-      };
-    } */
-
     const cost = await client.send(new GetCostAndUsageCommand(commandParams));
 
     const data = {
@@ -60,6 +57,20 @@ export const handler = async () => {
         Key: `data/cost-metrics.json`,
         Body: JSON.stringify(data),
         ContentType: "application/json",
+        CacheControl: "public, max-age=86400",
+      }),
+    );
+
+    await cloudFront.send(
+      new CreateInvalidationCommand({
+        DistributionId: process.env.CLOUDFRONT_DISTRIBUTION_ID,
+        InvalidationBatch: {
+          CallerReference: Date.now().toString(),
+          Paths: {
+            Quantity: 1,
+            Items: ["/data/cost-metrics.json"],
+          },
+        },
       }),
     );
 
