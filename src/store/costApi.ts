@@ -1,14 +1,4 @@
 import { dispatch, actions } from "./index";
-import type { CostBreakdownItem } from "./types";
-
-const servicesDictionary: Record<string, string> = {
-  "Amazon Simple Storage Service": "S3",
-  "AWS Lambda": "lambda",
-  "CloudFront Flat-Rate Plans": "cloudfront (flat-rate)",
-  AmazonCloudWatch: "cloudwatch",
-  "AWS Cost Explorer": "AWS cost explorer",
-  "Amazon Route 53": "hosted zone (flat-rate)",
-};
 
 export async function loadCostMetrics(): Promise<void> {
   dispatch(actions.setCostLoading(true));
@@ -20,16 +10,8 @@ export async function loadCostMetrics(): Promise<void> {
       throw new Error(`${response.status} ${response.statusText}`);
     }
 
-    const payload = (await response.json()) as {
-      serviceBreakdown: CostBreakdownItem[];
-    };
-    const stats = payload.serviceBreakdown
-      .filter((item) => !!servicesDictionary[item.service])
-      .sort((a, b) => Number(b.amount) - Number(a.amount))
-      .map((item) => ({
-        service: servicesDictionary[item.service],
-        amount: item.amount,
-      }));
+    const stats = await response.json();
+
     dispatch(actions.setCostStats(stats));
   } catch (error) {
     dispatch(
