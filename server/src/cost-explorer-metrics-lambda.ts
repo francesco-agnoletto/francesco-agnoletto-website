@@ -23,6 +23,15 @@ const now = new Date();
 const start = new Date(now.getFullYear(), now.getMonth(), 1);
 const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
+const servicesDictionary: Record<string, string> = {
+  "Amazon Simple Storage Service": "S3",
+  "AWS Lambda": "lambda",
+  "CloudFront Flat-Rate Plans": "cloudfront (flat-rate)",
+  AmazonCloudWatch: "cloudwatch",
+  "AWS Cost Explorer": "AWS cost explorer",
+  "Amazon Route 53": "hosted zone (flat-rate)",
+};
+
 export const handler = async () => {
   try {
     const commandParams: GetCostAndUsageCommandInput = {
@@ -51,11 +60,19 @@ export const handler = async () => {
         })) ?? [],
     };
 
+    const cleanData = data.serviceBreakdown
+      .filter((item) => !!servicesDictionary[item.service])
+      .sort((a, b) => Number(b.amount) - Number(a.amount))
+      .map((item) => ({
+        service: servicesDictionary[item.service],
+        amount: item.amount,
+      }));
+
     await s3.send(
       new PutObjectCommand({
         Bucket: process.env.S3_BUCKET_NAME,
         Key: `data/cost-metrics.json`,
-        Body: JSON.stringify(data),
+        Body: JSON.stringify(cleanData),
         ContentType: "application/json",
         CacheControl: "public, max-age=86400",
       }),
@@ -74,7 +91,7 @@ export const handler = async () => {
       }),
     );
 
-    return data;
+    return cleanData;
   } catch (error) {
     return error;
   }
