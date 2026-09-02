@@ -60,13 +60,14 @@ export const handler = async () => {
         })) ?? [],
     };
 
-    const cleanData = data.serviceBreakdown
-      .filter((item) => !!servicesDictionary[item.service])
-      .sort((a, b) => Number(b.amount) - Number(a.amount))
-      .map((item) => ({
-        service: servicesDictionary[item.service],
-        amount: item.amount,
-      }));
+    const cleanData = Object.entries(servicesDictionary)
+      .map(([service, label]) => ({
+        service: label,
+        amount:
+          data.serviceBreakdown.find((item) => item.service === service)
+            ?.amount ?? "0",
+      }))
+      .sort((a, b) => Number(b.amount) - Number(a.amount));
 
     await s3.send(
       new PutObjectCommand({
