@@ -123,4 +123,4 @@ These files are uploaded to S3 and consumed by the frontend dashboard.
 
 - The frontend is intentionally minimal and framework-free.
 - AWS credentials are provided via GitHub Actions OIDC and role assumption.
-- The site is designed for a secure, low-complexity portfolio deployment with periodic server-side metric updates.
+- The site is designed as a secure, low-complexity portfolio deployment with periodic server-side metric updates.
