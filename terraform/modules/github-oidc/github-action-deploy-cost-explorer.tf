@@ -40,7 +40,7 @@ resource "aws_iam_role" "github-action-deploy-cost-explorer" {
           }
 
           StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:francesco-agnoletto/francesco-agnoletto-website:ref:refs/heads/main"
+            "token.actions.githubusercontent.com:sub" = "repo:francesco-agnoletto@11630180/francesco-agnoletto-website@1250698883:ref:refs/heads/main"
           }
         }
       }
