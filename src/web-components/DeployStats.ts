@@ -32,7 +32,7 @@ export function initDeployStats() {
       `duration: ${stats.durationSeconds}s`;
     const commit = root.querySelector<HTMLAnchorElement>("[data-commit]")!;
     commit.textContent = stats.commit.slice(0, 7);
-    commit.href = `https://github.com/Kornil/francesco-agnoletto/commit/${stats.commit}`;
+    commit.href = `https://github.com/francesco-agnoletto/francesco-agnoletto-website/commit/${stats.commit}`;
   };
 
   render();
