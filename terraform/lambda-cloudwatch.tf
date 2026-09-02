@@ -1,7 +1,7 @@
 resource "aws_lambda_function" "francesco-agnoletto-cloudwatch-metrics-lambda" {
   filename      = "cloudwatch-metrics-lambda.zip"
   function_name = "francesco-agnoletto-lambda"
-  description   = "cloudwatch hourly metrics for francesco-agnoletto"
+  description   = "cloudwatch daily metrics for francesco-agnoletto"
   role          = aws_iam_role.francesco-agnoletto-cloudwatch-metrics-lambda-role.arn
   handler       = "cloudwatch-metrics-lambda.handler"
   runtime       = "nodejs24.x"

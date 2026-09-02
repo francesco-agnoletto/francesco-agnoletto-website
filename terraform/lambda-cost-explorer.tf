@@ -1,7 +1,7 @@
 resource "aws_lambda_function" "francesco-agnoletto-cost-explorer-lambda" {
   filename      = "cost-explorer-metrics-lambda.zip"
   function_name = "francesco-agnoletto-lambda-cost"
-  description   = "cloudwatch daily cost for francesco-agnoletto"
+  description   = "cloudwatch weekly cost for francesco-agnoletto"
   role          = aws_iam_role.francesco-agnoletto-cost-explorer-lambda-role.arn
   handler       = "cost-explorer-metrics-lambda.handler"
   runtime       = "nodejs24.x"
