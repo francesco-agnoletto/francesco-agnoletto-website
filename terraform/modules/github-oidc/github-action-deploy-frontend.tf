@@ -56,7 +56,7 @@ resource "aws_iam_role" "github-action-deploy-francesco-agnoletto-com" {
           }
 
           StringLike = {
-            "token.actions.githubusercontent.com:sub" = "repo:Kornil/francesco-agnoletto:ref:refs/heads/main"
+            "token.actions.githubusercontent.com:sub" = "repo:francesco-agnoletto/francesco-agnoletto-website:ref:refs/heads/main"
           }
         }
       }
