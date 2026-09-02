@@ -6,6 +6,8 @@
   "scripts": {
     "build-cloudwatch": "esbuild src/cloudwatch-metrics-lambda.ts --bundle --platform=node --target=node24 --format=cjs --outdir=dist --minify",
     "build-cost-explorer": "esbuild src/cost-explorer-metrics-lambda.ts --bundle --platform=node --target=node24 --format=cjs --outdir=dist --minify",
+    "run-cloudwatch": "esbuild src/run-lambda-local.ts --bundle --platform=node --target=node24 --format=cjs --outfile=dist/run-lambda-local.cjs && node dist/run-lambda-local.cjs cloudwatch",
+    "run-cost-explorer": "esbuild src/run-lambda-local.ts --bundle --platform=node --target=node24 --format=cjs --outfile=dist/run-lambda-local.cjs && node dist/run-lambda-local.cjs cost-explorer",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
